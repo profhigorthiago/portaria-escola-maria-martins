@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Saída - Escola Maria Martins</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .class-item, .student-item {
+            margin-bottom: 20px;
+        }
+        .class-item h2 {
+            margin-bottom: 10px;
+        }
+        .responsible-select, .student-select {
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+        .responsible-display {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Controle de Saída de Alunos - CEM Maria Martins</h1>
+
+    <div class="class-item">
+        <h2>1º Ano A</h2>
+        <label>Aluno:</label>
+        <select class="student-select" onchange="selecionarAluno(this, '1º Ano A')">
+            <option value="">Selecione o aluno</option>
+            <option value="Ana Souza">Ana Souza</option>
+            <option value="João Santos">João Santos</option>
+            <option value="Carlos Pereira">Carlos Pereira</option>
+            <option value="Maria Oliveira">Maria Oliveira</option>
+            <option value="Lucas Costa">Lucas Costa</option>
+            <option value="Amanda Souza">Amanda Souza</option>
+            <option value="Ricardo Almeida">Ricardo Almeida</option>
+            <option value="Fernanda Lima">Fernanda Lima</option>
+            <option value="Rafael Souza">Rafael Souza</option>
+            <option value="Larissa Gomes">Larissa Gomes</option>
+            <option value="Gabriel Santos">Gabriel Santos</option>
+            <option value="Beatriz Rodrigues">Beatriz Rodrigues</option>
+            <option value="Eduardo Pereira">Eduardo Pereira</option>
+            <option value="Simone Lima">Simone Lima</option>
+            <option value="Marcos Costa">Marcos Costa</option>
+            <option value="Juliana Lima">Juliana Lima</option>
+            <option value="Helena Martins">Helena Martins</option>
+            <option value="Thiago Souza">Thiago Souza</option>
+            <option value="Julio Rodrigues">Julio Rodrigues</option>
+            <option value="Patricia Almeida">Patricia Almeida</option>
+            <option value="Carlos Silva">Carlos Silva</option>
+            <option value="Juliana Costa">Juliana Costa</option>
+            <option value="Felipe Ramos">Felipe Ramos</option>
+            <option value="Ana Lima">Ana Lima</option>
+            <option value="Marcelo Costa">Marcelo Costa</option>
+        </select>
+        <label>Responsável:</label>
+        <select class="responsible-select" id="responsible-1º Ano A" onchange="atualizarResponsavel(this, '1º Ano A')">
+            <option value="">Selecione o responsável</option>
+        </select>
+        <span class="responsible-display" id="display-1º Ano A"></span>
+    </div>
+
+    <div class="class-item">
+        <h2>2º Ano B</h2>
+        <label>Aluno:</label>
+        <select class="student-select" onchange="selecionarAluno(this, '2º Ano B')">
+            <option value="">Selecione o aluno</option>
+            <option value="Bruno Lima">Bruno Lima</option>
+            <option value="Lúcia Fernandes">Lúcia Fernandes</option>
+            <option value="Gustavo Martins">Gustavo Martins</option>
+            <option value="Isabela Costa">Isabela Costa</option>
+            <option value="Henrique Silva">Henrique Silva</option>
+            <option value="Carla Mendes">Carla Mendes</option>
+            <option value="Vitor Almeida">Vitor Almeida</option>
+            <option value="Marina Ramos">Marina Ramos</option>
+            <option value="Tatiane Oliveira">Tatiane Oliveira</option>
+            <option value="Lucas Silva">Lucas Silva</option>
+            <option value="Paula Costa">Paula Costa</option>
+            <option value="Roberta Oliveira">Roberta Oliveira</option>
+            <option value="Felipe Souza">Felipe Souza</option>
+            <option value="Raul Lima">Raul Lima</option>
+            <option value="Andréia Costa">Andréia Costa</option>
+            <option value="Nathalia Martins">Nathalia Martins</option>
+            <option value="Miguel Santos">Miguel Santos</option>
+            <option value="Alana Pereira">Alana Pereira</option>
+            <option value="Marcos Oliveira">Marcos Oliveira</option>
+            <option value="Catarina Souza">Catarina Souza</option>
+            <option value="José Lima">José Lima</option>
+            <option value="Emilly Almeida">Emilly Almeida</option>
+            <option value="Fabio Silva">Fabio Silva</option>
+            <option value="Cláudia Rodrigues">Cláudia Rodrigues</option>
+        </select>
+        <label>Responsável:</label>
+        <select class="responsible-select" id="responsible-2º Ano B" onchange="atualizarResponsavel(this, '2º Ano B')">
+            <option value="">Selecione o responsável</option>
+        </select>
+        <span class="responsible-display" id="display-2º Ano B"></span>
+    </div>
+
+    <button onclick="enviarListaWhatsApp()">Enviar Registro de Saída pelo WhatsApp</button>
+
+    <script>
+        // Lista de responsáveis para cada aluno
+        const responsaveisPorAluno = {
+            'Ana Souza': ['Carlos Souza', 'Maria Souza'],
+            'João Santos': ['Fernanda Santos', 'Paulo Santos'],
+            'Carlos Pereira': ['Julio Pereira', 'Fernanda Pereira'],
+            'Maria Oliveira': ['José Oliveira', 'Eliane Oliveira'],
+            'Lucas Costa': ['Ana Costa', 'Ricardo Costa'],
+            'Amanda Souza': ['Roberto Souza', 'Luana Souza'],
+            'Ricardo Almeida': ['Mariana Almeida', 'Roberto Almeida'],
+            'Fernanda Lima': ['Carlos Lima', 'Patrícia Lima'],
+            'Rafael Souza': ['Gustavo Souza', 'Cecília Souza'],
+            'Larissa Gomes': ['Simone Gomes', 'Paulo Gomes'],
+            'Gabriel Santos': ['Sandra Santos', 'Fernando Santos'],
+            'Beatriz Rodrigues': ['Juliana Rodrigues', 'Carlos Rodrigues'],
+            'Eduardo Pereira': ['Gustavo Pereira', 'Lúcia Pereira'],
+            'Simone Lima': ['Marcelo Lima', 'Tatiane Lima'],
+            'Marcos Costa': ['Eliane Costa', 'Fernando Costa'],
+            'Juliana Lima': ['Renato Lima', 'Andréia Lima'],
+            'Helena Martins': ['Célia Martins', 'Otávio Martins'],
+            'Thiago Souza': ['Juliana Souza', 'Ronaldo Souza'],
+            'Julio Rodrigues': ['Fátima Rodrigues', 'Ricardo Rodrigues'],
+            'Patricia Almeida': ['Luis Almeida', 'Monica Almeida'],
+            'Carlos Silva': ['Mariana Silva', 'José Silva'],
+            'Juliana Costa': ['Eduardo Costa', 'Márcia Costa'],
+            'Felipe Ramos': ['Rosa Ramos', 'Carlos Ramos'],
+            'Ana Lima': ['Ricardo Lima', 'Renata Lima'],
+            'Marcelo Costa': ['Luciana Costa', 'Antonio Costa'],
+            'Bruno Lima': ['Fernando Lima', 'Luciana Lima'],
+            'Lúcia Fernandes': ['Carlos Fernandes', 'Ana Fernandes'],
+            'Gustavo Martins': ['Ana Martins', 'Carlos Martins'],
+            'Isabela Costa': ['Marcio Costa', 'Patricia Costa'],
+            'Henrique Silva': ['Gustavo Silva', 'Lúcia Silva'],
+            'Carla Mendes': ['Mário Mendes', 'Ana Mendes'],
+            'Vitor Almeida': ['Tânia Almeida', 'Paulo Almeida'],
+            'Marina Ramos': ['Carla Ramos', 'Ricardo Ramos'],
+            'Tatiane Oliveira': ['Fernando Oliveira', 'Joana Oliveira'],
+            'Lucas Silva': ['Juliana Silva', 'Carlos Silva'],
+            'Paula Costa': ['Gustavo Costa', 'Elena Costa'],
+            'Roberta Oliveira': ['Roberto Oliveira', 'Fátima Oliveira'],
+            'Felipe Souza': ['Nathalia Souza', 'Rafael Souza'],
+            'Raul Lima': ['Edilson Lima', 'Monica Lima'],
+            'Andréia Costa': ['Silvia Costa', 'Carlos Costa'],
+            'Nathalia Martins': ['Lúcio Martins', 'Maria Martins'],
+            'Miguel Santos': ['Paula Santos', 'Luiz Santos'],
+            'Alana Pereira': ['Edson Pereira', 'Mariana Pereira'],
+            'Marcos Oliveira': ['Valeria Oliveira', 'Ricardo Oliveira'],
+            'Catarina Souza': ['Tiago Souza', 'Verônica Souza'],
+            'José Lima': ['Carlos Lima', 'Diana Lima'],
+            'Emilly Almeida': ['Rafael Almeida', 'Sônia Almeida'],
+            'Fabio Silva': ['Carlos Silva', 'Tatiane Silva'],
+            'Cláudia Rodrigues': ['Renato Rodrigues', 'Tânia Rodrigues']
+        };
+
+        // Armazena o aluno selecionado para cada turma
+        var alunosSelecionados = {};
+
+        function selecionarAluno(select, turma) {
+            const alunoSelecionado = select.value;
+            alunosSelecionados[turma] = alunoSelecionado;
+
+            // Atualiza a lista de responsáveis para o aluno selecionado
+            const responsibleSelect = document.getElementById('responsible-' + turma);
+            responsibleSelect.innerHTML = '<option value="">Selecione o responsável</option>'; // Limpa e adiciona a opção padrão
+
+            // Adiciona os responsáveis do aluno selecionado à lista suspensa
+            if (responsaveisPorAluno[alunoSelecionado]) {
+                responsaveisPorAluno[alunoSelecionado].forEach(responsavel => {
+                    const option = document.createElement('option');
+                    option.value = responsavel;
+                    option.textContent = responsavel;
+                    responsibleSelect.appendChild(option);
+                });
+            }
+
+            atualizarResponsavel(responsibleSelect, turma);
+        }
+
+        function atualizarResponsavel(select, turma) {
+            const alunoSelecionado = alunosSelecionados[turma] || '';
+            const responsibleName = select.value;
+            const displayElement = document.getElementById('display-' + turma);
+
+            // Atualiza o texto ao lado da turma com o nome do aluno e do responsável selecionado
+            displayElement.textContent = alunoSelecionado && responsibleName ?
+                ` - ${alunoSelecionado} | Responsável: ${responsibleName}` : '';
+        }
+
+        function enviarListaWhatsApp() {
+            let listaSaida = 'Registro de Saída de Alunos:\n\n';
+
+            // Coleta as informações de saída para cada turma
+            for (const [turma, aluno] of Object.entries(alunosSelecionados)) {
+                const responsibleSelect = document.getElementById('responsible-' + turma);
+                const responsibleName = responsibleSelect ? responsibleSelect.value : '';
+
+                if (aluno && responsibleName) {
+                    listaSaida += `• Turma: ${turma}\n   - Aluno: ${aluno}\n   - Retirado por: ${responsibleName}\n\n`;
+                }
+            }
+
+            if (listaSaida === 'Registro de Saída de Alunos:\n\n') {
+                alert("Nenhum responsável foi selecionado. Por favor, selecione ao menos um para enviar.");
+                return;
+            }
+
+            const urlWhatsApp = 'https://wa.me/5517991238319?text=' + encodeURIComponent(listaSaida);
+            window.open(urlWhatsApp, '_blank');
+        }
+    </script>
+</body>
+</html>

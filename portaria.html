@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Saída - Escola Maria Martins</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .class-item, .student-item {
+            margin-bottom: 20px;
+        }
+        .class-item h2 {
+            margin-bottom: 10px;
+        }
+        .student-select {
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+        .responsible-display {
+            font-weight: bold;
+            color: #333;
+        }
+        .student-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .student-list li {
+            margin-bottom: 10px;
+        }
+        .student-item {
+            display: flex;
+            align-items: center;
+        }
+        .student-item label {
+            margin-right: 10px;
+        }
+        .responsible-select {
+            margin-left: 10px;
+        }
+        .highlight {
+            font-weight: bold;
+            color: green;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Controle de Saída de Alunos - CEM Maria Martins</h1>
+
+    <div class="class-item">
+        <h2>1º Ano A</h2>
+        <ul class="student-list">
+            <li class="student-item">
+                <label>
+                    <input type="checkbox" name="aluno-1ºAnoA" value="Ana Souza" onchange="selecionarAluno(this, 'Ana Souza', '1º Ano A')"> Ana Souza
+                </label>
+                <select class="responsible-select" id="responsible-Ana-Souza" onchange="atualizarResponsavel('Ana Souza', '1º Ano A')">
+                    <option value="">Selecione o responsável</option>
+                </select>
+            </li>
+            <li class="student-item">
+                <label>
+                    <input type="checkbox" name="aluno-1ºAnoA" value="João Santos" onchange="selecionarAluno(this, 'João Santos', '1º Ano A')"> João Santos
+                </label>
+                <select class="responsible-select" id="responsible-João-Santos" onchange="atualizarResponsavel('João Santos', '1º Ano A')">
+                    <option value="">Selecione o responsável</option>
+                </select>
+            </li>
+        </ul>
+        <div id="highlight-1º Ano A" class="highlight"></div>
+    </div>
+
+    <div class="class-item">
+        <h2>2º Ano B</h2>
+        <ul class="student-list">
+            <li class="student-item">
+                <label>
+                    <input type="checkbox" name="aluno-2ºAnoB" value="Bruno Lima" onchange="selecionarAluno(this, 'Bruno Lima', '2º Ano B')"> Bruno Lima
+                </label>
+                <select class="responsible-select" id="responsible-Bruno-Lima" onchange="atualizarResponsavel('Bruno Lima', '2º Ano B')">
+                    <option value="">Selecione o responsável</option>
+                </select>
+            </li>
+            <li class="student-item">
+                <label>
+                    <input type="checkbox" name="aluno-2ºAnoB" value="Lúcia Fernandes" onchange="selecionarAluno(this, 'Lúcia Fernandes', '2º Ano B')"> Lúcia Fernandes
+                </label>
+                <select class="responsible-select" id="responsible-Lúcia-Fernandes" onchange="atualizarResponsavel('Lúcia Fernandes', '2º Ano B')">
+                    <option value="">Selecione o responsável</option>
+                </select>
+            </li>
+        </ul>
+        <div id="highlight-2º Ano B" class="highlight"></div>
+    </div>
+
+    <button onclick="enviarListaWhatsApp()">Enviar Registro de Saída pelo WhatsApp</button>
+
+    <script>
+        // Lista de responsáveis para cada aluno
+        const responsaveisPorAluno = {
+            'Ana Souza': ['Carlos Souza', 'Maria Souza'],
+            'João Santos': ['Fernanda Santos', 'Paulo Santos'],
+            'Bruno Lima': ['Fernando Lima', 'Luciana Lima'],
+            'Lúcia Fernandes': ['Carlos Fernandes', 'Ana Fernandes']
+        };
+
+        // Armazena o aluno selecionado para cada turma
+        var alunosSelecionados = {
+            '1º Ano A': {},
+            '2º Ano B': {}
+        };
+
+        function selecionarAluno(checkbox, aluno, turma) {
+            // Se o aluno for marcado, adiciona ele aos alunosSelecionados
+            if (checkbox.checked) {
+                alunosSelecionados[turma][aluno] = turma;
+            } else {
+                // Se o aluno for desmarcado, remove ele dos alunosSelecionados
+                delete alunosSelecionados[turma][aluno];
+            }
+
+            // Preenche os responsáveis para o aluno selecionado
+            const responsibleSelect = document.getElementById('responsible-' + aluno.replace(' ', '-'));
+            responsibleSelect.innerHTML = '<option value="">Selecione o responsável</option>';
+
+            // Adiciona os responsáveis para o aluno selecionado
+            if (responsaveisPorAluno[aluno]) {
+                responsaveisPorAluno[aluno].forEach(responsavel => {
+                    const option = document.createElement('option');
+                    option.value = responsavel;
+                    option.textContent = responsavel;
+                    responsibleSelect.appendChild(option);
+                });
+            }
+
+            atualizarResponsavel(aluno, turma);
+        }
+
+        function atualizarResponsavel(aluno, turma) {
+            const responsibleSelect = document.getElementById('responsible-' + aluno.replace(' ', '-'));
+            const responsibleName = responsibleSelect ? responsibleSelect.value : '';
+            const highlightElement = document.getElementById('highlight-' + turma);
+
+            let allValid = true;
+            let destaque = '';
+
+            // Exibe o aluno e responsável na área de destaque
+            for (const aluno in alunosSelecionados[turma]) {
+                const select = document.getElementById('responsible-' + aluno.replace(' ', '-'));
+                const responsavel = select ? select.value : '';
+                if (responsavel) {
+                    destaque += `• Aluno: ${aluno} | Responsável: ${responsavel}<br>`;
+                } else {
+                    allValid = false;
+                }
+            }
+
+            // Atualiza o destaque de responsáveis
+            if (allValid) {
+                highlightElement.innerHTML = destaque;
+            } else {
+                highlightElement.innerHTML = 'Por favor, selecione um responsável para todos os alunos.';
+            }
+        }
+
+        function enviarListaWhatsApp() {
+            let listaSaida = 'Registro de Saída de Alunos:\n\n';
+            let allValid = true;
+
+            // Coleta as informações de saída para cada turma
+            for (const turma in alunosSelecionados) {
+                for (const aluno in alunosSelecionados[turma]) {
+                    const responsibleSelect = document.getElementById('responsible-' + aluno.replace(' ', '-'));
+                    const responsibleName = responsibleSelect ? responsibleSelect.value : '';
+
+                    if (aluno && responsibleName) {
+                        listaSaida += `• Turma: ${turma}\n   - Aluno: ${aluno}\n   - Retirado por: ${responsibleName}\n\n`;
+                    } else {
+                        allValid = false;
+                    }
+                }
+            }
+
+            if (!allValid) {
+                alert("Por favor, selecione um responsável para todos os alunos antes de enviar.");
+                return;
+            }
+
+            const urlWhatsApp = 'https://wa.me/5517991238319?text=' + encodeURIComponent(listaSaida);
+            window.open(urlWhatsApp, '_blank');
+        }
+    </script>
+</body>
+</html>
